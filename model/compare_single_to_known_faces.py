@@ -24,17 +24,3 @@ def compare_face_to_known(face_to_match, known_face_list, to_match_top=1):
             person = crud.get_person({"name":person[0]})[0]
             similar_people_records.append(person)
     return similar_people_records
-
-
-    # for i, face_distance in enumerate(face_distances):
-    #     if face_distance < 0.6:
-    #         print(
-    #             "The test image has a distance of {:.2} from known image #{}".format(
-    #                 face_distance, ids[i]))
-    #         print(
-    #             "- With a normal cutoff of 0.6, would the test image match the known image? {}".format(
-    #                 face_distance < 0.6))
-    #         print(
-    #             "- With a very strict cutoff of 0.5, would the test image match the known image? {}".format(
-    #                 face_distance < 0.5))
-    #         print()
