@@ -1,7 +1,8 @@
-from pymongo import MongoClient
 import os
-from db_connection.test_data import TEST_DATA
-from pathlib import Path
+
+from pymongo import MongoClient
+
+from tests.db_tests.test_data import TEST_DATA
 
 CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
 PICTURE_DIR = CURRENT_DIR + os.sep + ".." + os.sep + "pictures" + os.sep
@@ -27,13 +28,33 @@ class Crud(object):
         else:
             return ValueError("No Name Provided")
 
-    def insert_test_data(self):
+    def delete_all_people(self):
         person_col = self.db.person
         person_col.remove({})
+
+    def insert_test_data(self):
+        person_col = self.db.person
+        self.delete_all_people()
         test_data = TEST_DATA
         for per in test_data:
             self.insert_person(per)
         return person_col.find({}).count()
+
+    def update_person(self, find_by, update):
+        """
+        :param find_by: dict e.g {name:"alex"}
+        :param update: dict of field want to edit {"role":"DBA"}
+        """
+        person_col = self.db.person
+        person_col.update(
+            find_by,
+            {'$set' : update}
+        , upsert=False)
+
+    def __del__(self):
+        self.client.close()
+
+
 
 if __name__ == "__main__":
     crud = Crud()

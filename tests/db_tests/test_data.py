@@ -1,9 +1,9 @@
 
 TEST_DATA = [
     {
-        "name": "Alex",
-        "title": "guy who breaks things",
-        "photo_location":"Alex.jpg"
+        "name": "Alex Young",
+        "title": "Data Scientist",
+        "photo_location":"Alex_Young.jpg"
     },
     {
         "name": "Gary",

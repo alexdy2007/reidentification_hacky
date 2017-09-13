@@ -18,9 +18,6 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@app.route('/')
-def hello_world():
-    return render_template('main.html')
 
 @app.route('/comparefile', methods=["POST"])
 def comparefile():
