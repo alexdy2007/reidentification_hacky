@@ -1,22 +1,26 @@
 import socket
+import pickle
 import numpy as np
 import atexit
 
 class SocketClient(object):
     def __init__(self):
-        print(socket.gethostbyname("raspberry"))
-        host = '10.42.0.192'
+        host = '192.168.0.48'
         port = 5560
         self.soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.soc.bind((host, port))
-        self.get_picture()
+        self.soc.connect((host, port))
 
 
     def get_picture(self):
-        self.soc.send(str.encode("length"))
+
+        self.soc.sendall(str.encode("length"))
         pic_length = self.soc.recv(1024)
-        self.soc.send(str.encode("picture"))
+        pic_length = int(pic_length.decode("utf-8"))
+        print(pic_length)
+        self.soc.sendall(str.encode("picture"))
         picture = self._recvall(self.soc,pic_length)
+        picture_array = pickle.loads(picture)
+        return picture_array
 
     def kill_server(self):
         self.soc.send(str.encode("kill"))
@@ -34,6 +38,7 @@ class SocketClient(object):
 
 
     def _recvall(self, soc, count):
+
         buf = b''
         while count:
             newbuf = soc.recv(count)
