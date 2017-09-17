@@ -9,3 +9,7 @@ def encode_all_people_in_db():
         image_encoding = encode_image(image_location)
         if len(image_encoding)>0:
             crud.update_person(person, {"encoded_face":list(image_encoding), "has_encodings":True})
+
+
+if __name__ == "__main__":
+    encode_all_people_in_db()

@@ -4,7 +4,7 @@ import random
 from shutil import copyfile
 
 CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
-PICTURE_DIR = CURRENT_DIR + os.sep + ".." + os.sep + "pictures" +os.sep
+PICTURE_DIR = CURRENT_DIR + os.sep + ".." + os.sep + "webface" + os.sep + "src" + os.sep + "assets" + os.sep + "pictures" + os.sep
 DATA_DIR = CURRENT_DIR + os.sep + ".." + os.sep + "data" + os.sep
 
 ROLES = ["BI", "Dev", "Tester", "Discovery", "Product Owner", "Director", "Lab Manager"]

@@ -3,6 +3,7 @@ import os
 from pymongo import MongoClient
 
 from tests.db_tests.test_data import TEST_DATA
+from datetime import datetime, timedelta
 
 CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
 PICTURE_DIR = CURRENT_DIR + os.sep + ".." + os.sep + "pictures" + os.sep
@@ -50,6 +51,27 @@ class Crud(object):
             find_by,
             {'$set' : update}
         , upsert=False)
+
+    def person_seen_db_insert(self, person):
+        new_person = {}
+        person_seen_db = self.db.personSeen
+        new_person["name"] = person["name"]
+        new_person["time_seen"] = datetime.now()
+        if "encoded_face" in person:
+            del person["encoded_face"]
+        person_seen_db.insert(new_person)
+
+
+    def find_someone_seen_in_last_x_seconds(self, seconds):
+        person_seen_db = self.db.personSeen
+        dt_x_second_ago  = datetime.now() - timedelta(seconds=seconds)
+        query =  {"time_seen":{'$gt':dt_x_second_ago}}
+        limit_to_fields = {"name":1}
+        people_seen = person_seen_db.find(query, limit_to_fields).distinct("name")
+        return people_seen
+
+
+
 
     def __del__(self):
         self.client.close()

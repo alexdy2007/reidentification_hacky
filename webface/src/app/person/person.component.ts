@@ -20,11 +20,13 @@ export class PersonComponent implements OnInit {
     public rowsOnPage = 10;
     public sortBy = "email";
     public sortOrder = "asc";
+    private personService: PersonService;
 
-  constructor(
-     private personService: PersonService) {
+  constructor(personService: PersonService) {
+    
+     this.personService = personService;
 
-     personService.newpersonDataAnnounced$.subscribe(
+     this.personService.newpersonDataAnnounced$.subscribe(
           data => {
             this.data = data
           }
