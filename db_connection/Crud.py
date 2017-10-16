@@ -8,11 +8,16 @@ from datetime import datetime, timedelta
 CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
 PICTURE_DIR = CURRENT_DIR + os.sep + ".." + os.sep + "pictures" + os.sep
 
+#mongo -u ian -p secretPassword 123.45.67.89/cool_db
+
 class Crud(object):
 
-    URI_CONNTECTION_STRING = "mongodb://localhost:27017/"
 
-    def __init__(self):
+    def __init__(self, remote=False):
+        if remote:
+            self.URI_CONNTECTION_STRING = "mongodb://localhost:27017/"
+        else:
+            self.URI_CONNTECTION_STRING = "mongodb://localhost:27017/"
         self.client = MongoClient(self.URI_CONNTECTION_STRING)
         self.db = self.client.facialrecdb
 

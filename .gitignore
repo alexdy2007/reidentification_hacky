@@ -1,4 +1,5 @@
 
+*.ini
 lfw_funneled/*
 *.pyc
 .idea/*

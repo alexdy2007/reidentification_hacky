@@ -7,12 +7,15 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { VisableComponent }   from './visable/visable.component';
 import { PersonComponent }   from './person/person.component';
+import { NewpersonComponent }   from './newperson/newperson.component';
 
 
 const routes: Routes = [
   { path: '', redirectTo: '/visable', pathMatch: 'full' },
   { path: 'visable',  component: VisableComponent, pathMatch: 'full' },
   { path: 'person',  component: PersonComponent, pathMatch: 'full' },
+  { path: 'newperson',  component: NewpersonComponent, pathMatch: 'full' },
+
 
 
 ];

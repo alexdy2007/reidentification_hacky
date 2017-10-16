@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, flash, jsonify
+from flask import Flask, request, redirect, flash, jsonify, Response
 import os
 from webserver.person.person import Person
 from flask_restful import Api
@@ -11,7 +11,10 @@ from time import sleep
 from pathlib import Path
 
 CURRENT_DIR =  os.path.dirname(os.path.realpath(__file__))
-UPLOAD_FOLDER = CURRENT_DIR + os.sep + 'static' + os.sep + "upload"
+DATA_DIR = CURRENT_DIR + os.sep + ".."  + os.sep + "data" + os.sep
+PICTURE_DIR = CURRENT_DIR + os.sep + ".." + os.sep + "webface" + os.sep + "src" + os.sep + "assets" + os.sep + "pictures" + os.sep
+
+UPLOAD_FOLDER = PICTURE_DIR
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 TIME_BETWEEN_PICTURES = 4
@@ -24,6 +27,7 @@ api.add_resource(Person,"/api")
 crud = Crud()
 
 
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -33,8 +37,7 @@ def allowed_file(filename):
 def comparefile():
 
     if 'file' not in request.files:
-        flash('No file part')
-        return redirect(request.url)
+        return Response("Can't read or detect image sent", status=502, mimetype='application/json')
 
     file = request.files['file']
     if file and allowed_file(file.filename):
@@ -43,6 +46,58 @@ def comparefile():
         file_path = UPLOAD_FOLDER + os.sep + filename
     else:
         return "NO IMAGE FOUND"
+
+@app.route('/api/addperson', methods=["POST", "OPTIONS"])
+def addperson():
+
+    def count_current_photos_of_person(person_dir):
+        dir_to_check = PICTURE_DIR + person_dir
+
+        if not os.path.exists(dir_to_check):
+            os.makedirs(dir_to_check)
+
+        number_of_photos_of_person = len(os.listdir(dir_to_check))
+        n = number_of_photos_of_person + 1
+        n_str = str(n)
+        if n < 10:
+            prefix = "000" + n_str
+        else:
+            prefix = "00" + n_str
+        return prefix
+
+
+    if 'uploadFile' not in request.files:
+        return Response("Can't read or detect image sent", status=502, mimetype='application/json')
+    first_name = request.values["name"].capitalize()
+    last_name = request.values["lastName"].capitalize()
+    if request.values["role"] == "":
+        role = "Not Specified"
+    else:
+        role = request.values["role"].capitalize()
+
+    file = request.files['uploadFile']
+    file_name = file.filename
+    file_type = file_name.split(".")[1]
+    folder_dir = first_name + "_" + last_name
+
+    if file and allowed_file(file_name):
+        n = count_current_photos_of_person(folder_dir)
+        new_file_name = first_name + "_" + last_name + "_" + n + "." + file_type
+        filename = secure_filename(new_file_name)
+        final_path = folder_dir + os.sep + filename
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], final_path))
+
+        person_data = {
+            "name": folder_dir,
+            "role": role,
+            "photo_location": PICTURE_DIR + final_path,
+            "has_encodings": False
+        }
+
+        crud.insert_person(person_data)
+
+    print("OK")
+    return "Success"
 
 @app.route('/api/peoplevisable', methods=["GET"])
 def peoplevisable():
@@ -74,14 +129,15 @@ def repeat_picture_capture(sc, crud):
 
 
 if __name__ == '__main__':
-    threads = []
-    sc = SocketClient()
-    t1 = threading.Thread(target=repeat_picture_capture, args=(sc,crud))
-    t2 = threading.Thread(target=run_web)
-    threads.append(t1)
-    threads.append(t2)
-    for t in threads:
-        t.start()
-    while True:
-        pass
+    run_web()
+    # threads = []
+    # sc = SocketClient()
+    # t1 = threading.Thread(target=repeat_picture_capture, args=(sc,crud))
+    # t2 = threading.Thread(target=run_web)
+    # threads.append(t1)
+    # threads.append(t2)
+    # for t in threads:
+    #     t.start()
+    # while True:
+    #     pass
 

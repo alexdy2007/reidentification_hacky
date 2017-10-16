@@ -13,14 +13,13 @@ export class VisableComponent implements OnInit {
 
   private personService: PersonService;
   private peoplevis: any;
-  private poll : boolean
+  private poll : boolean;
 
   constructor(personService: PersonService) {
     this.peoplevis = [];
     this.personService = personService;
     this.personService.newPersonVisableDataAnnounced$.subscribe(
       data => {
-        console.log("CALL MADE");
         this.peoplevis = data
       }
     );
