@@ -7,6 +7,8 @@ def encode_all_people_in_db():
     for person in people:
         image_location = person["photo_location"]
         image_encoding = encode_image(image_location)
+        if len(image_encoding) > 1:
+            image_encoding = image_encoding[0]
         if len(image_encoding)>0:
             crud.update_person(person, {"encoded_face":list(image_encoding), "has_encodings":True})
 

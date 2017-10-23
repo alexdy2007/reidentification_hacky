@@ -6,7 +6,8 @@ import threading
 from werkzeug.utils import secure_filename
 from webserver.take_pictures.take_pictures import take_pictures
 from sockets.PictureRecSocket import SocketClient
-from db_connection.Crud import Crud
+from db_connection.PeopleDB import PeopleDB
+from db_connection.MontageDB import MontageDB
 from time import sleep
 from pathlib import Path
 
@@ -24,7 +25,9 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 api = Api(app)
 api.add_resource(Person,"/api")
-crud = Crud()
+
+peopleDB = PeopleDB()
+montageDB = MontageDB()
 
 
 
@@ -94,17 +97,17 @@ def addperson():
             "has_encodings": False
         }
 
-        crud.insert_person(person_data)
+        peopleDB.insert_person(person_data)
 
     print("OK")
     return "Success"
 
 @app.route('/api/peoplevisable', methods=["GET"])
 def peoplevisable():
-    people_seen = crud.find_someone_seen_in_last_x_seconds(PEOPLE_VIS_IN_LAST_SECS)
+    people_seen = peopleDB.find_someone_seen_in_last_x_seconds(PEOPLE_VIS_IN_LAST_SECS)
     if len(people_seen)!=0:
         query = {"name": {'$in':people_seen}}
-        people_profiles = crud.get_person(query)
+        people_profiles = peopleDB.get_person(query)
         for p in people_profiles:
             if "encoded_face" in p: del p["encoded_face"]
             del p["_id"]
