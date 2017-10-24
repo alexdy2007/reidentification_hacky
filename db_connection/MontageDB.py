@@ -1,4 +1,7 @@
-from db_connection import Crud
+from db_connection.Crud import Crud
+import numpy as np
+from bson.binary import Binary
+import pickle
 
 class MontageDB(Crud):
 
@@ -11,14 +14,17 @@ class MontageDB(Crud):
         :param photo_location: path
         :param face_encodings: [[face encodings],[face encodings],...]
         """
-
+        face_encodings_bin = Binary(pickle.dumps(face_encodings, pickle.HIGHEST_PROTOCOL))
         if len(face_encodings) > 0:
             data = {"photo_location":photo_location,
-                    "face_encodings" : face_encodings}
+                    "face_encodings" : face_encodings_bin}
             self.target_db.insert(data)
 
     def get_all(self):
-        return self.target_db.find({})
+        data = [x for x in self.target_db.find({})]
+        for d in data:
+            d["face_encodings"] = pickle.loads(d["face_encodings"], )
+        return data
 
 
     def delete_all(self):
