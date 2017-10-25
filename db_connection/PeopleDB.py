@@ -1,4 +1,5 @@
 from db_connection.Crud import Crud
+import os
 
 class PeopleDB(Crud):
 
@@ -22,10 +23,9 @@ class PeopleDB(Crud):
     def delete_all_people(self):
         self.target_db.remove({})
 
-    def insert_test_data(self):
+    def insert_test_data(self, test_data=None):
         person_col = self.db.person
         self.delete_all_people()
-        test_data = self.TEST_DATA
         for per in test_data:
             self.insert_person(per)
         return person_col.find({}).count()

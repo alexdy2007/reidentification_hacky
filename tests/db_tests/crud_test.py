@@ -1,9 +1,9 @@
 from unittest import TestCase
-from db_connection.Crud import Crud
+from db_connection.PeopleDB import PeopleDB
 
 class TestDB(TestCase):
     def setUp(self):
-        self.crud = Crud()
+        self.crud = PeopleDB()
 
     def test_insert_testdata(self):
         number_inserted = self.crud.insert_test_data()
