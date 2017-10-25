@@ -1,7 +1,10 @@
 from flask_restful import Resource
-from db_connection.Crud import Crud
+from db_connection.PeopleDB import PeopleDB
 from flask import jsonify, request
-crud = Crud()
+import subprocess
+
+
+crud = PeopleDB()
 
 
 class Person(Resource):

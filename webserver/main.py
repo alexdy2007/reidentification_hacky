@@ -1,15 +1,15 @@
-from flask import Flask, request, redirect, flash, jsonify, Response
+from flask import Flask, request, jsonify, Response
 import os
 from webserver.person.person import Person
 from flask_restful import Api
 import threading
 from werkzeug.utils import secure_filename
 from webserver.take_pictures.take_pictures import take_pictures
-from sockets.PictureRecSocket import SocketClient
 from db_connection.PeopleDB import PeopleDB
 from db_connection.MontageDB import MontageDB
 from time import sleep
-from pathlib import Path
+from webserver.apis.montage_api import montage_page
+
 
 CURRENT_DIR =  os.path.dirname(os.path.realpath(__file__))
 DATA_DIR = CURRENT_DIR + os.sep + ".."  + os.sep + "data" + os.sep
@@ -23,6 +23,7 @@ PEOPLE_VIS_IN_LAST_SECS = 12
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.register_blueprint(montage_page)
 api = Api(app)
 api.add_resource(Person,"/api")
 

@@ -3,7 +3,7 @@ from db_connection.Crud import Crud
 class PeopleDB(Crud):
 
     def __init__(self):
-        super.__init__(remote=False)
+        super().__init__()
         self.target_db = self.db.person
 
 

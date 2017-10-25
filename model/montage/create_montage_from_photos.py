@@ -1,7 +1,14 @@
 from imutils import build_montages
 import math
 import random
+import os
 import cv2
+
+CURRENT_DIR =  os.path.dirname(os.path.realpath(__file__))
+TMP_DIR = CURRENT_DIR + os.sep + ".." + os.sep + ".."  + os.sep \
+    + "webserver" + os.sep + "static" + os.sep + "tmp" + os.sep
+TMP_MONTAGE_FILE0 = TMP_DIR + "montage0.jpg"
+TMP_MONTAGE_FILE1 = TMP_DIR + "montage1.jpg"
 
 def create_montage(image_list, samples=10):
     samples = min(len(image_list), samples)
@@ -29,7 +36,7 @@ def create_montage(image_list, samples=10):
     else:
         montages =[]
 
-    for montage in montages:
-	    cv2.imshow("Montage", montage)
-
-    cv2.waitKey(0)
+    if len(montages)>0:
+        montage = montages[0]
+        cv2.imwrite(TMP_MONTAGE_FILE0, montage)
+        cv2.imwrite(TMP_MONTAGE_FILE1, montage)
