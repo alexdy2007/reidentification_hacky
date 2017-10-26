@@ -8,7 +8,7 @@ CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
 UPLOAD_FOLDER = CURRENT_DIR + os.sep + ".." + os.sep + "static" + os.sep + "tmp" +os.sep
 TEMP_FILE = UPLOAD_FOLDER + "tmpstream.jpg"
 
-def take_pictures(sc, crud, create_montage=False):
+def take_pictures(sc, crud, montage, make_montage=False):
     picture = sc.get_picture()
     known_faces = get_feature_encoding_list()
     people_similar = compare_face_to_known(picture, known_faces, True)
@@ -16,7 +16,8 @@ def take_pictures(sc, crud, create_montage=False):
         for p in people_similar:
             print("{}:found".format(p["name"]))
             crud.person_seen_db_insert(p)
-    if create_montage:
+    if make_montage:
         im = Image.fromarray(picture)
         im.save(TEMP_FILE)
-        create_montage(TEMP_FILE)
+        photos = montage.get_all_photos_with_person_in(TEMP_FILE)
+        create_montage(photos)

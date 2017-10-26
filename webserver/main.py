@@ -9,7 +9,8 @@ from db_connection.PeopleDB import PeopleDB
 from db_connection.MontageDB import MontageDB
 from time import sleep
 from webserver.apis.montage_api import montage_page
-
+from sockets.PictureRecSocket import SocketClient
+from model.montage.montage import Montage
 
 CURRENT_DIR =  os.path.dirname(os.path.realpath(__file__))
 DATA_DIR = CURRENT_DIR + os.sep + ".."  + os.sep + "data" + os.sep
@@ -29,7 +30,7 @@ api.add_resource(Person,"/api")
 
 peopleDB = PeopleDB()
 montageDB = MontageDB()
-
+montage = Montage()
 
 
 def allowed_file(filename):
@@ -127,21 +128,22 @@ def run_web():
 
 def repeat_picture_capture(sc, crud):
     while True:
-        take_pictures(sc, crud)
+        make_montage = True
+        take_pictures(sc, crud, montage, make_montage)
         sleep(2)
 
 
 
 if __name__ == '__main__':
-    run_web()
-    # threads = []
-    # sc = SocketClient()
-    # t1 = threading.Thread(target=repeat_picture_capture, args=(sc,crud))
-    # t2 = threading.Thread(target=run_web)
-    # threads.append(t1)
-    # threads.append(t2)
-    # for t in threads:
-    #     t.start()
-    # while True:
-    #     pass
+    # run_web()
+    threads = []
+    sc = SocketClient()
+    t1 = threading.Thread(target=repeat_picture_capture, args=(sc,peopleDB))
+    t2 = threading.Thread(target=run_web)
+    threads.append(t1)
+    threads.append(t2)
+    for t in threads:
+        t.start()
+    while True:
+        pass
 

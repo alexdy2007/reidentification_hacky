@@ -1,14 +1,10 @@
 from flask_restful import Resource
 from db_connection.PeopleDB import PeopleDB
 from flask import jsonify, request
-import subprocess
-
 
 crud = PeopleDB()
 
-
 class Person(Resource):
-
 
     def get(self, role=None, name=None):
         query = {}
@@ -20,6 +16,7 @@ class Person(Resource):
             if "encoded_face" in p: del p["encoded_face"]
             del p["_id"]
         return jsonify(people)
+
 
     def post(self):
         data = request.get_json()

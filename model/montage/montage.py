@@ -34,13 +34,18 @@ class Montage():
 
     def get_all_photos_with_person_in(self, picture_file):
         list_of_photos_in = []
-        person_encoding = encode_image(picture_file)[0]
-        for pic in self.all_picture_data:
-            pic_face_encodings_list = pic["face_encodings"]
-            distance_of_person = is_in_photo(person_encoding, pic_face_encodings_list)
-            if distance_of_person:
-                list_of_photos_in.append(pic["photo_location"])
-        return list_of_photos_in
+        person_encoding = encode_image(picture_file)
+        if len(person_encoding)>0:
+            #use first person identified in photo
+            person_encoding = person_encoding[0]
+            for pic in self.all_picture_data:
+                pic_face_encodings_list = pic["face_encodings"]
+                distance_of_person = is_in_photo(person_encoding, pic_face_encodings_list)
+                if distance_of_person:
+                    list_of_photos_in.append(pic["photo_location"])
+            return list_of_photos_in
+        else:
+            return []
 
     def delete_all(self):
         self.montageDB.delete_all()

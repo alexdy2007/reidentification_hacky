@@ -1,7 +1,7 @@
-from db_connection.Crud import Crud
+from db_connection.PeopleDB import PeopleDB
 
 def get_feature_encoding_list():
-    crud = Crud()
+    crud = PeopleDB()
     people = crud.get_person({"has_encodings":True})
 
     encoding_list = []
